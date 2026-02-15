@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WS Stress Test (Browser)</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1a1a2e; color: #e0e0e0; }
+    h1 { color: #8899aa; font-size: 16px; }
+    #status { font-size: 20px; font-weight: bold; margin: 12px 0; }
+    .pass { color: #4caf50; }
+    .fail { color: #f44336; }
+    #log { font-size: 14px; line-height: 1.6; white-space: pre; }
+  </style>
+</head>
+<body>
+  <h1>WS Stress Test</h1>
+  <div id="status">Running...</div>
+  <pre id="log"></pre>
+  <script src="stress-bundle.js"></script>
+</body>
+</html>

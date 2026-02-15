@@ -1,0 +1,25 @@
+{
+  "name": "protoc-gen-ws-example",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@bufbuild/protobuf": "^2",
+    "protoc-gen-ws": "file:../../ts"
+  },
+  "scripts": {
+    "pretest": "npm --prefix ../../ts run build",
+    "test": "vitest run",
+    "k6:build": "esbuild ../k6/browser-harness.ts --bundle --outfile=../k6/test-bundle.js --format=iife --platform=browser && esbuild ../k6/stress-harness.ts --bundle --outfile=../k6/stress-bundle.js --format=iife --platform=browser",
+    "k6": "node ../k6/run.mjs",
+    "k6:load": "node ../k6/run.mjs load",
+    "k6:stress": "node ../k6/run.mjs stress",
+    "k6:soak": "node ../k6/run.mjs soak",
+    "k6:all": "node ../k6/run.mjs all"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27",
+    "typescript": "^5",
+    "vitest": "^3"
+  }
+}

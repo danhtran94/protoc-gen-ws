@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package example.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/danhtran94/protoc-gen-ws/example/gen/v1;v1";
+
+service IdentityService {
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+  // Server stream: watch for user change events
+  rpc WatchUsers(WatchUsersRequest) returns (stream UserEvent) {}
+  // Client stream: bulk import users, get summary at end
+  rpc ImportUsers(stream CreateUserRequest) returns (ImportUsersResponse) {}
+  // Bidi stream: sync user state bidirectionally
+  rpc SyncUsers(stream SyncUsersRequest) returns (stream SyncUsersResponse) {}
+}
+
+message CreateUserRequest {
+  string email = 1;
+  string username = 2;
+  string role = 3;
+}
+
+message CreateUserResponse {
+  User user = 1;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message WatchUsersRequest {
+  // Optional role filter
+  string role = 1;
+}
+
+message UserEvent {
+  string type = 1; // "created", "updated", "deleted"
+  User user = 2;
+}
+
+message ImportUsersResponse {
+  int32 imported_count = 1;
+  int32 failed_count = 2;
+}
+
+message SyncUsersRequest {
+  string type = 1; // "subscribe", "unsubscribe"
+  string user_id = 2;
+}
+
+message SyncUsersResponse {
+  string type = 1; // "snapshot", "update", "ack"
+  User user = 2;
+}
+
+message User {
+  string id = 1;
+  string email = 2;
+  string username = 3;
+  string role = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}

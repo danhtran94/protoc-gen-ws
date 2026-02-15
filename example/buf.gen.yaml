@@ -1,0 +1,23 @@
+version: v2
+inputs:
+  - directory: proto
+plugins:
+  - local: ["go", "tool", "protoc-gen-go"]
+    out: gen
+    opt: paths=source_relative
+  - local: ["go", "tool", "protoc-gen-connect-go"]
+    out: gen
+    opt: paths=source_relative
+  - local: ["go", "tool", "protoc-gen-ws"]
+    out: gen
+    opt:
+      - paths=source_relative
+      - ws_import=github.com/danhtran94/protoc-gen-ws/ws
+  - remote: buf.build/bufbuild/es:v2.2.3
+    out: ts/gen
+    opt: target=ts
+  - local: ["go", "tool", "protoc-gen-ws-ts"]
+    out: ts/gen
+    opt:
+      - paths=source_relative
+      - runtime_import=protoc-gen-ws
