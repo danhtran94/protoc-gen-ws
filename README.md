@@ -40,12 +40,35 @@ Ideal for:
 
 ## Install
 
+### Protoc Plugins (Go)
+
 ```bash
 go tool github.com/danhtran94/protoc-gen-ws/cmd/protoc-gen-ws@latest
 go tool github.com/danhtran94/protoc-gen-ws/cmd/protoc-gen-ws-ts@latest
 ```
 
 Note: `go tool <tool>` uses tool dependencies declared in go.mod (Go 1.21+).
+
+### TypeScript Runtime
+
+Install the TypeScript runtime from GitHub Releases:
+
+```bash
+# Replace vX.Y.Z with the desired version
+npm install https://github.com/danhtran94/protoc-gen-ws/releases/download/v1.0.0/protoc-gen-ws-1.0.0.tgz
+```
+
+Or in `package.json`:
+
+```json
+{
+  "dependencies": {
+    "protoc-gen-ws": "https://github.com/danhtran94/protoc-gen-ws/releases/download/v1.0.0/protoc-gen-ws-1.0.0.tgz"
+  }
+}
+```
+
+See [Releases](https://github.com/danhtran94/protoc-gen-ws/releases) for available versions.
 
 ## Usage
 
@@ -157,31 +180,56 @@ For local development in this repo, the example project uses a `file:` dependenc
 
 ## Publishing
 
-### npm
+TypeScript releases are published to GitHub Releases as tarballs. Users install directly from release URLs.
 
-From the `ts/` package directory:
+### Creating a Release
 
-```bash
-npm run build
-npm publish
-```
-
-Notes:
-- The package ships `dist/` only. `exports` in `ts/package.json` maps subpath imports like `protoc-gen-ws/yamux.js`.
-- Keep `type: module` (ESM) and `.js` import paths for compatibility with generated code.
-
-### JSR
-
-JSR publishes from `ts/` as well. A typical flow:
+Use the automated release script:
 
 ```bash
-npm run build
-npx jsr publish
+# Interactive mode (prompts for version)
+make release
+
+# Or specify version directly
+./scripts/release.sh 1.0.0
 ```
 
-Notes:
-- JSR expects ESM and types; the build produces `dist/src/*.d.ts` alongside JS.
-- If you want a different package name on JSR, set it in `ts/package.json` and re-run `npm run build`.
+The script will:
+1. Update version in `package.json`
+2. Run tests and build
+3. Create tarball with `npm pack`
+4. Create and push git tag
+5. Create GitHub release with tarball attached
+
+See [scripts/README.md](scripts/README.md) for detailed documentation.
+
+### Manual Release
+
+If you prefer manual control:
+
+```bash
+# 1. Update version and build
+cd ts
+npm version 1.0.0 --no-git-tag-version
+npm ci && npm test && npm run build
+
+# 2. Create tarball
+npm pack
+# Creates: protoc-gen-ws-1.0.0.tgz
+
+# 3. Create and push tag
+git add package.json package-lock.json
+git commit -m "chore: bump version to 1.0.0"
+git tag v1.0.0
+git push origin main
+git push origin v1.0.0
+
+# 4. Create GitHub release
+gh release create v1.0.0 \
+  protoc-gen-ws-1.0.0.tgz \
+  --title "v1.0.0" \
+  --notes "Release notes here"
+```
 
 ## Components
 

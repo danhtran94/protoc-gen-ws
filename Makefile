@@ -1,4 +1,4 @@
-.PHONY: test test-go test-ts test-example-ts test-all gen-example install build-ts
+.PHONY: test test-go test-ts test-example-ts test-all gen-example install build-ts release
 
 test: test-go test-ts
 
@@ -22,3 +22,6 @@ gen-example:
 install:
 	go install ./cmd/protoc-gen-ws/
 	go install ./cmd/protoc-gen-ws-ts/
+
+release:
+	@./scripts/release.sh
