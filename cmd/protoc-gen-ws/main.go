@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"google.golang.org/protobuf/compiler/protogen"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
 // Package-level import path constants.
@@ -33,6 +34,7 @@ func main() {
 	flags.BoolVar(&streamingOnly, "streaming_only", false, "Only generate streaming RPCs (skip unary methods handled by Connect-RPC)")
 
 	protogen.Options{ParamFunc: flags.Set}.Run(func(gen *protogen.Plugin) error {
+		gen.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
 		if wsImport == "" {
 			return fmt.Errorf("protoc-gen-ws: missing required option ws_import")
 		}
